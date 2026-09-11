@@ -8,7 +8,7 @@ import java.util.function.Function;
 import core.*;
 import core.E.*;
 import message.TypeSystemErrors;
-import utils.Range;
+import utils.Streams;
 
 public record Kinding(TypeSystemErrors tsE){
   public void checkC(E toErr, List<B> bs, T.C c){
@@ -16,7 +16,7 @@ public record Kinding(TypeSystemErrors tsE){
     var params = d.bs();
     var args= c.ts();
     assert eq(params.size(), args.size(), "Arity mismatch for " + c.name());
-    for (int i : Range.of(params)){ check(toErr, c, i, bs, args.get(i), params.get(i).rcs()); }
+    Streams.zipI(args,params).forEach((i,arg,param)->check(toErr, c, i, bs, arg, param.rcs()));
   }
   public void check(E toErr, List<B> bs, T t){ 
     if (t instanceof T.RCC rcc){ check(toErr,rcc,-1,bs,rcc,EnumSet.allOf(RC.class)); }
@@ -53,10 +53,7 @@ public record Kinding(TypeSystemErrors tsE){
     var params = d.bs();
     var args= rcc.c().ts();
     assert eq(params.size(), args.size(), "Arity mismatch for " + rcc.c().name());
-    for (int i : Range.of(params)){
-      if (!of(bs, args.get(i), params.get(i).rcs())){ return false; }
-    }
-    return true;
+    return Streams.zip(args,params).allMatch((arg,param)->of(bs, arg, param.rcs()));
   }
   private boolean ofRCX(T.RCX rcx, EnumSet<RC> allowed){
     return allowed.contains(rcx.rc());

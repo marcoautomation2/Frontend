@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import core.B;
@@ -32,6 +31,7 @@ import naming.FreshPrefix;
 import tools.SourceOracle.Ref;
 import utils.Bug;
 import utils.Join;
+import utils.Streams;
 
 public record WellFormednessErrors(String pkgName){
   @SuppressWarnings("serial")
@@ -431,12 +431,10 @@ public record WellFormednessErrors(String pkgName){
   }
 
   private int firstRcsDisagreementIndex(List<List<B>> res){
-    return IntStream.range(0, res.getFirst().size())
-      .filter(i->{
+    return Streams.firstPos(res.getFirst(), i->{
         var r0= res.getFirst().get(i).rcs();
         return !res.stream().allMatch(bs->bs.get(i).rcs().equals(r0));
-      })
-      .findFirst().getAsInt();
+      }).get();
   }
   public FearlessException itTooDeep(E at,IT.RCC blame){
     return err()

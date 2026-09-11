@@ -8,7 +8,7 @@ import java.util.function.Function;
 import core.*;
 import core.E.*;
 import utils.Bug;
-import utils.Range;
+import utils.Streams;
 import typeSystem.Change.*;
 
 public record Gamma(Gamma tail, String name, T t, Change current){
@@ -20,10 +20,8 @@ public record Gamma(Gamma tail, String name, T t, Change current){
     return new Gamma(tail.map(f), name, t, f.apply(current));
   }
   public Gamma addAll(List<T> ts, List<String> xs){
-    var res= this;
     assert eq(xs.size(),ts.size(),"Arity mismatch in bodyOk");
-    for(int i : Range.of(xs)){ res = res.add(xs.get(i),ts.get(i)); }
-    return res;
+    return Streams.zip(xs,ts).fold((res,x,t)->res.add(x,t), this);
   }
   public record Binding(T declared, Change current){}
   public Binding bind(String x){

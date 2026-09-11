@@ -24,6 +24,7 @@ import utils.OneOr;
 import utils.Push;
 import utils.Range;
 import utils.Streams;
+
 /**
 Inference fix-point core loop relies on identity for E.
 Core loop relies on `oe == e` to detect stabilization in O(1) and avoid a deep
@@ -513,7 +514,7 @@ public record InjectionSteps(Methods meths){
     var args0= m.sig().ts();
     assert xs.size() == args0.size();
     assert m.sig().m().get().arity() == xs.size();
-    for (int i : Range.of(xs)){ g.declare(xs.get(i), args0.get(i).get()); }
+    Streams.zip(xs,args0).forEach((x,arg)->g.declare(x,arg.get()));
   }
   TSM headerResult(IT.RCC rcc, inference.M m, E e, core.Sig sig, M.Sig improvedSig){
     var rcc0= withTsNormBs(rcc,refineClsTsFromHeader(rcc.c().ts(), rcc, improvedSig,sig));

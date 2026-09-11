@@ -10,6 +10,7 @@ import inject.TypeRename;
 import message.Reason;
 import utils.Push;
 import utils.Range;
+import utils.Streams;
 import typeSystem.TypeSystem.*;
 
 record CallTyping(TypeSystem ts, List<B> bs, Gamma g, Call c, List<TRequirement> rs){
@@ -60,9 +61,7 @@ record CallTyping(TypeSystem ts, List<B> bs, Gamma g, Call c, List<TRequirement>
     assert c0.ts().size() == d.bs().size();
     var targs= c.targs();
     var kt= new KindingTarget.CallKinding(c0,c);
-    for(int i : Range.of(targs)){
-      ts.k().check(c,kt,i,bs,targs.get(i),sig.bs().get(i).rcs());
-    }
+    Streams.zipI(targs,sig.bs()).forEach((i,targ,sigB)->ts.k().check(c,kt,i,bs,targ,sigB.rcs()));
   }
   private ArgMatrix typeArgsOnce(Literal d,List<MType> app){
     var size= c.es().size();

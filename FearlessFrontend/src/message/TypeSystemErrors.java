@@ -22,6 +22,7 @@ import typeSystem.TypeSystem;
 import utils.Join;
 import utils.OneOr;
 import utils.Range;
+import utils.Streams;
 import core.*;
 import core.E.*;
 
@@ -471,10 +472,8 @@ public record TypeSystemErrors(Function<TName,Literal> decs, pkgmerge.Package pk
     case T.ReadImmX _ -> 1001;
   };}
   private static Reason pickReason(List<TRequirement> reqs, List<Reason> res){
-    return res.get(IntStream.range(0, res.size())
-      .filter(i->rcOnlyMismatch(res.get(i).best, reqs.get(i).t()))
-      .findFirst().orElse(0));
-  }  
+    return res.get(Streams.firstPos(res, i->rcOnlyMismatch(res.get(i).best, reqs.get(i).t())).orElse(0));
+  }
   ///Each argument of call c is compatible with at least one promotion, but no promotion fits all arguments.
   ///The per-argument sets of acceptable promotions have empty intersection.
   ///Raised when checking method calls.
@@ -517,8 +516,6 @@ public record TypeSystemErrors(Function<TName,Literal> decs, pkgmerge.Package pk
   return withCallSpans(e.ex(c), c);
   }
   private static int firstFailingArg(ArgMatrix mat, int promoIdx){
-    return IntStream.range(0, mat.okByArg().size())
-      .filter(argi->!mat.okByArg().get(argi).contains(promoIdx))
-      .findFirst().getAsInt();
+    return Streams.firstPos(mat.okByArg(), argi->!mat.okByArg().get(argi).contains(promoIdx)).get();
   }
 }

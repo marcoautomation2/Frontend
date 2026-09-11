@@ -9,6 +9,7 @@ import java.util.Optional;
 import core.RC;
 import inference.Gamma.GammaSignature;
 import utils.Range;
+import utils.Streams;
 
 public final class Monotonicity{
   private static final IdentityHashMap<GammaSignature,State> states= new IdentityHashMap<>();
@@ -119,9 +120,7 @@ public final class Monotonicity{
       }
       return true;
     }
-    for (int i : Range.of(nextTargs)){
-      step(c.g(), slot(K.CALL_TARG,i,0), c.targs().get(i), nextTargs.get(i), "Call.targs["+i+"]");
-    }
+    Streams.zipI(c.targs(),nextTargs).forEach((i,ct,nt)->step(c.g(), slot(K.CALL_TARG,i,0), ct, nt, "Call.targs["+i+"]"));
     return true;
   }
 
