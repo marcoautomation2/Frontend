@@ -528,7 +528,7 @@ import java.util.stream.*;
     }
     E meet(E e,T t){
       if(!(e instanceof Literal l&&l.t.tv())){var a=ascribe(e,t,null);return a.t(meet(a.t(),t));}
-      if(!(instance(l)&&inferred.contains(l.name.s)&&l.cs.size()>0&&meet(l.t,t) instanceof R m&&m.tv()))return e;
+      if(!(empty(l)&&l.cs.size()>0&&meet(l.t,t) instanceof R m&&m.tv()))return e;
       var r=new R(m.r,self(m.c));return r.equals(new R(l.r,l.cs.get(0)))?e:new Literal(null,l.name,list(),list(),l.self,list(),r,true,false);
     }
     T below(R sub,R sup){
@@ -592,7 +592,7 @@ import java.util.stream.*;
       case Call c->{var e1=solve(b,g,c.e);MS m;
       if(!(e1.t() instanceof R w)||(m=signature(w,c.name,c.r,c.t.erc()))==null)yield c.children(e1,solve(b,g,c.es));
       var n=m.cas.size();var k=m.mb.size();
-      var cs=push(new Con(m.ret,c.t,false,true),zip(m.ps,c.es,(p,x)->new Con(p,x.t(),true,!(x instanceof Literal l&&instance(l)&&inferred.contains(l.name.s)))));
+      var cs=push(new Con(m.ret,c.t,false,true),zip(m.ps,c.es,(p,x)->new Con(p,x.t(),true,!empty(x))));
       var all=decide(push(m.cb,m.mb),push(m.cas,c.written?push(c.y,qs(k)).subList(0,k):qs(k)),cs);
       var es=solve(b,g,zip(c.es,m.ps,(x,p)->meet(x,rename(p,m.v,all))));
       yield new Call(meet(e1,w.withTs(all.subList(0,n))),c.name,m.r,all.subList(n,all.size()),es,meet(c.t,rename(m.ret,m.v,all)),c.written);
@@ -604,6 +604,7 @@ import java.util.stream.*;
       return m==null?null:new MS(m.s.r,push(B.v(d.b),B.v(m.s.b)),d.b,w.c.types,m.s.b,m.s.types,m.s.t);
     }
     boolean instance(Literal l){return l.anon&&all(l.ms,m->m.e==null);}
+    boolean empty(E e){return e instanceof Literal l&&instance(l)&&inferred.contains(l.name.s);}
     record Con(T p,T a,boolean in,boolean eq){}
     List<T>decide(List<B>bs,List<T>given,List<Con>cs){var v=B.v(bs);
       Function<Con,List<T>>ref=c->refine(v,c.p,c.a);BinaryOperator<List<T>>join=(a,z)->zip(a,z,this::join);

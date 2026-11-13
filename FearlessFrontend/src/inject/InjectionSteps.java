@@ -287,8 +287,7 @@ public record InjectionSteps(Methods meths, int cap, boolean late){
     return t.withT(preferred(t.type()));
   }
   private E meetT(E.Type tt, IT t){
-    var inferred= tt.src().inner instanceof fearlessFullGrammar.E.Literal;
-    if (!inferred || !(meet(tt.t(), t) instanceof IT.RCC met) || !met.isTV()){ return nextT(tt); }
+    if (!emptyLiteral(tt) || !(meet(tt.t(), t) instanceof IT.RCC met) || !met.isTV()){ return nextT(tt); }
     var r= selfArgument(met);
     if (r.equals(tt.type())){ return nextT(tt); }
     var res= new E.Type(r, preferred(r), tt.src(), tt.g().clear());
