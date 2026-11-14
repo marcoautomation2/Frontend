@@ -611,12 +611,29 @@ Box: { .mk[X]: base.Main -> { .main -> base.Void{}; .id(y: X): X -> y } }
 
 While inspecting type declaration "NoGui[_]"
 Type declaration "NoGui[_]" implements "base.SystemAttenuator" and has generic type parameters.
-A concrete type implementing "base.SystemAttenuator" must have zero generic type parameters.
+A type implementing "base.SystemAttenuator" must have zero generic type parameters.
 """, List.of("""
 NoGui[X]: base.SystemAttenuator{ # -> base.Void }
 """));}
-@Test void abstractAttenuatorWithGenericParameters(){ok(List.of("""
+@Test void abstractAttenuatorWithGenericParameters(){failWf("""
+001| Shape[X]: base.SystemAttenuator{ .extra: X }
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+While inspecting type declaration "Shape[_]"
+Type declaration "Shape[_]" implements "base.SystemAttenuator" and has generic type parameters.
+A type implementing "base.SystemAttenuator" must have zero generic type parameters.
+""", List.of("""
 Shape[X]: base.SystemAttenuator{ .extra: X }
+"""));}
+@Test void anonymousAttenuatorInAGenericMethod(){failWf("""
+001| Box: { .mk[X]: base.SystemAttenuator -> { # -> base.Void{}; .id(y: X): X -> y } }
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+While inspecting object literal instance of "base.SystemAttenuator"
+Object literal instance of "base.SystemAttenuator" implements "base.SystemAttenuator" and has generic type parameters.
+A type implementing "base.SystemAttenuator" must have zero generic type parameters.
+""", List.of("""
+Box: { .mk[X]: base.SystemAttenuator -> { # -> base.Void{}; .id(y: X): X -> y } }
 """));}
 @Test void infoMainWithGenericParameters(){failWf("""
 001| Twice[X]: base.InfoMain{ .main -> base.Void }
@@ -624,11 +641,18 @@ Shape[X]: base.SystemAttenuator{ .extra: X }
 
 While inspecting type declaration "Twice[_]"
 Type declaration "Twice[_]" implements "base.InfoMain" and has generic type parameters.
-A concrete type implementing "base.InfoMain" must have zero generic type parameters.
+A type implementing "base.InfoMain" must have zero generic type parameters.
 """, List.of("""
 Twice[X]: base.InfoMain{ .main -> base.Void }
 """));}
-@Test void abstractInfoMainWithGenericParameters(){ok(List.of("""
+@Test void abstractInfoMainWithGenericParameters(){failWf("""
+001| Shape[X]: base.InfoMain{ .extra: X }
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+While inspecting type declaration "Shape[_]"
+Type declaration "Shape[_]" implements "base.InfoMain" and has generic type parameters.
+A type implementing "base.InfoMain" must have zero generic type parameters.
+""", List.of("""
 Shape[X]: base.InfoMain{ .extra: X }
 """));}
 @Test void dataReadWithGenericParameters(){failWf("""

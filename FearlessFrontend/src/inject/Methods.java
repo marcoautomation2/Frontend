@@ -123,7 +123,9 @@ public record Methods(
     if (names.contains(LiteralDeclarations.fileLog)){ checkFileLogName(d); }
     checkClaims(d, names, allCs);
     allCs.stream().filter(c -> c.name().equals(LiteralDeclarations.finalMethods)).forEach(c -> checkFinal(d, finalMethod(d, c), allCs));
-    if (names.contains(LiteralDeclarations.main) && !d.bs().isEmpty()){ throw p.err().namedGeneric(d, LiteralDeclarations.main, "A type"); }
+    for (var n : LiteralDeclarations.notGeneric){
+      if (names.contains(n) && !d.bs().isEmpty()){ throw p.err().namedGeneric(d, n, "A type"); }
+    }
     var concrete= d.ms().stream().allMatch(m -> m.impl().isPresent() || !m.sig().abs());
     for (var n : LiteralDeclarations.concreteNotGeneric){
       if (names.contains(n) && concrete && !d.bs().isEmpty()){ throw p.err().namedGeneric(d, n, "A concrete type"); }
