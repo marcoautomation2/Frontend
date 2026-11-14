@@ -3955,8 +3955,8 @@ In file: [###].fear
 While inspecting object literal instance of "base.Void"
 Object literal instance of "base.Void" implements sealed type "base.Void".
 Sealed types can only be implemented in their own package.
-Object literal instance of "base.Void" is defined in package "p".
-Type "Void" is defined in package "base".
+Object literal instance of "base.Void" is in package "p".
+Type "base.Void" is in package "base".
 Error 7 WellFormedness
 """, List.of("""
 Sup:{
@@ -3996,8 +3996,8 @@ In file: [###].fear
 While inspecting type declaration "ExtStr"
 Type declaration "ExtStr" implements sealed type `"beer"`.
 Sealed types can only be implemented in their own package.
-Type declaration "ExtStr" is defined in package "p".
-Type `"beer"` is defined in package "base".
+Type declaration "ExtStr" is in package "p".
+Type `"beer"` is in package "base".
 Error 7 WellFormedness
 """, List.of("""
 ExtStr:"beer"{}

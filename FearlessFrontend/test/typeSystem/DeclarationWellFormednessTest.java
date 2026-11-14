@@ -846,8 +846,8 @@ Icon: {}
 While inspecting type declaration "C"
 Type declaration "C" implements sealed type "base.Void".
 Sealed types can only be implemented in their own package.
-Type declaration "C" is defined in package "p".
-Type "Void" is defined in package "base".
+Type declaration "C" is in package "p".
+Type "base.Void" is in package "base".
 """, List.of("""
 C:base.Void{}
 """));}
@@ -858,8 +858,8 @@ C:base.Void{}
 While inspecting object literal "C"
 Object literal "C" implements sealed type "base.Void".
 Sealed types can only be implemented in their own package.
-Object literal "C" is defined in package "p".
-Type "Void" is defined in package "base".
+Object literal "C" is in package "p".
+Type "base.Void" is in package "base".
 """, List.of("""
 Test:{ #: C -> C: base.Void{} }
 """));}
@@ -870,8 +870,8 @@ Test:{ #: C -> C: base.Void{} }
 While inspecting object literal "C"
 Object literal "C" implements sealed type "base.Void".
 Sealed types can only be implemented in their own package.
-Object literal "C" is defined in package "p".
-Type "Void" is defined in package "base".
+Object literal "C" is in package "p".
+Type "base.Void" is in package "base".
 """, List.of("""
 A:{}
 Test:{ #: C -> C: base.Void,A{} }
@@ -903,6 +903,19 @@ A[X:*]:{ .no: mut A[X] }
 """));}
 @Test void readTypeNestedInReadType(){ok(List.of("""
 A[X:*]:{ .no: read A[read A[X]] }
+"""));}
+@Test void objectLiteralImplementingAForeignSealedTypeThroughAnAlias(){failWf("""
+002| Test:{ #: C -> C: V{} }
+   |                ^^^^^^
+
+While inspecting object literal "C"
+Object literal "C" implements sealed type "V".
+Sealed types can only be implemented in their own package.
+Object literal "C" is in package "p".
+Type "V" is in package "base".
+""", List.of("""
+use base.Void as V;
+Test:{ #: C -> C: V{} }
 """));}
 @Test void supertypeWrittenTwice(){failWf("""
 001| A:B,C,B,D{}

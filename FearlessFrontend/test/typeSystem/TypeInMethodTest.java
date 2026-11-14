@@ -184,8 +184,8 @@ In file: [###].fear
 While inspecting object literal instance of "a._P"
 Object literal instance of "a._P" implements private type "a._P".
 Private types can only be implemented in their own package.
-Object literal instance of "a._P" is defined in package "b".
-Type "_P" is defined in package "a".
+Object literal instance of "a._P" is in package "b".
+Type "a._P" is in package "a".
 Error 7 WellFormedness""", """
 _P:{ .foo: base.Void }
 Take:{ #(p:_P): base.Void -> base.Void }
@@ -202,8 +202,8 @@ In file: [###].fear
 While inspecting object literal instance of "a._P"
 Object literal instance of "a._P" implements private type "a._P".
 Private types can only be implemented in their own package.
-Object literal instance of "a._P" is defined in package "b".
-Type "_P" is defined in package "a".
+Object literal instance of "a._P" is in package "b".
+Type "a._P" is in package "a".
 Error 7 WellFormedness""", """
 _P:{ .foo: base.Void -> base.Void }
 Take:{ #(p:_P): base.Void -> base.Void }
@@ -220,8 +220,8 @@ In file: [###].fear
 While inspecting object literal instance of "a._P"
 Object literal instance of "a._P" implements private type "a._P".
 Private types can only be implemented in their own package.
-Object literal instance of "a._P" is defined in package "b".
-Type "_P" is defined in package "a".
+Object literal instance of "a._P" is in package "b".
+Type "a._P" is in package "a".
 Error 7 WellFormedness""", """
 _P:{ .foo: base.Void }
 Take:{ #(p:_P): base.Void -> base.Void }
@@ -254,8 +254,8 @@ In file: [###].fear
 While inspecting object literal instance of "a.S"
 Object literal instance of "a.S" implements sealed type "a.S".
 Sealed types can only be implemented in their own package.
-Object literal instance of "a.S" is defined in package "b".
-Type "S" is defined in package "a".
+Object literal instance of "a.S" is in package "b".
+Type "a.S" is in package "a".
 Error 7 WellFormedness""", """
 S:base.Sealed{ .foo: base.Void }
 Take:{ #(p:S): base.Void -> base.Void }
@@ -274,7 +274,7 @@ This object literal is missing a required method.
 Missing: "imm .foo".
 Required by: "a.S".
 Sealed types can only be implemented in their own package.
-Type "S" is defined in package "a".
+Type "a.S" is in package "a".
 
 Compressed relevant code with inferred types: (compression indicated by `-`)
 iso -.S
@@ -296,7 +296,7 @@ This object literal is missing a required method.
 Missing: "imm .foo".
 Required by: "a.S".
 Sealed types can only be implemented in their own package.
-Type "S" is defined in package "a".
+Type "a.S" is in package "a".
 
 Compressed relevant code with inferred types: (compression indicated by `-`)
 iso -.S
@@ -363,8 +363,8 @@ In file: [###].fear
 While inspecting object literal instance of "a._P"
 Object literal instance of "a._P" implements private type "a._P".
 Private types can only be implemented in their own package.
-Object literal instance of "a._P" is defined in package "b".
-Type "_P" is defined in package "a".
+Object literal instance of "a._P" is in package "b".
+Type "a._P" is in package "a".
 Error 7 WellFormedness""", """
 Sup:{}
 _P:Sup{}

@@ -152,7 +152,7 @@ public record TypeSystemErrors(Function<TName,Literal> decs, Package pkg, Linked
     var name= t.type().c().name();
     return addExpFrame(at, e
       .line("Sealed types can only be implemented in their own package.")
-      .line("Type "+disp(name.simpleName())+" is defined in package "+disp(Package.writtenPkg(pkg.map(), name.pkgName()))+".")
+      .line("Type "+err().tNameADisp(name)+" is in package "+disp(Package.writtenPkg(pkg.map(), name.pkgName()))+".")
       .ex(at));
   }
   private boolean foreignSealed(TName name){

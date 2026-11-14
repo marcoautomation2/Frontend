@@ -679,8 +679,8 @@ public record WellFormednessErrors(String pkgName, Map<String,String> map, Map<S
     return wf(err()
       .line(ctx+" implements "+kind+" type "+err().tNameADisp(target)+".")
       .line(up(kind)+" types can only be implemented in their own package.")
-      .line(ctx+" is defined in package "+disp(pkgName)+".")
-      .line("Type "+disp(target.simpleName())+" is defined in package "+disp(Package.writtenPkg(map, targetPkg))+"."), owner);
+      .line(ctx+" is in package "+disp(pkgName)+".")
+      .line("Type "+err().tNameADisp(target)+" is in package "+disp(Package.writtenPkg(map, targetPkg))+"."), owner);
   }
   public FearlessException implementsAnonymousType(E.Literal l, E.Literal owner){
     return err()
