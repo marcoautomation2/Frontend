@@ -358,13 +358,12 @@ public record InjectionSteps(Methods meths, int cap, boolean late){
     }
     if (!(l.t() instanceof IT.RCC rcc)){ return l; }
     var solved= new ArrayList<M>(l.ms().size());
-    var rcci= withTsNormBs(rcc, rcc.c().ts());
     for (var mi : l.ms()){
       assert mi.impl().isEmpty() || selfPrecise.isEmpty() || rcc.isTV();
-      solved.add(mi.impl().isEmpty() ? mi : nextMStarOp(bs, g, l, selfPrecise, rcci, mi));
+      solved.add(mi.impl().isEmpty() ? mi : nextMStarOp(bs, g, l, selfPrecise, rcc, mi));
     }
     var d= meths._from(rcc.c().name());
-    var ts= d == null ? rcc.c().ts().stream().map(t -> deFresh(g, t)).toList() : decide(g, d.bs(), rcc.c().ts(), solved.stream().flatMap(m -> constraints(rcci, m)).toList());
+    var ts= d == null ? rcc.c().ts().stream().map(t -> deFresh(g, t)).toList() : decide(g, d.bs(), rcc.c().ts(), solved.stream().flatMap(m -> constraints(rcc, m)).toList());
     var t= rcc.withTs(ts);
     var ms= norm(l.ms(), Streams.zip(l.ms(), solved).map((mi, m) -> instantiate(t, mi, m)).toList());
     var noChange= ms == l.ms() && ts.equals(rcc.c().ts());
@@ -576,9 +575,4 @@ public record InjectionSteps(Methods meths, int cap, boolean late){
     case IT.ReadImmX(var x) -> Optional.of(x.name());
     default -> Optional.empty();
   };}
-  private IT.RCC withTsNormBs(IT.RCC rcc, List<IT> ts){
-    var d= meths._from(rcc.c().name());
-    if (d == null){ return rcc.withTs(ts); }   // {..}.foo etc.
-    return rcc.withTs(normToBounds(d.bs(), ts));
-  }
 }
