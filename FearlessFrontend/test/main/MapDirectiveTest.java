@@ -509,8 +509,8 @@ In file: [###].fear
 While inspecting type declaration "B"
 Type declaration "B" implements sealed type "a.S".
 Sealed types can only be implemented in their own package.
-Type declaration "B" is defined in package "b".
-Type "S" is defined in package "a".
+Type declaration "B" is in package "b".
+Type "a.S" is in package "a".
 
 Source code inside folders named "_b" uses package name "a" to refer to the code inside folders named "_c", because of "map a as _c in _b", written in fear:/_b/_rank_app.fear.
 Error 7 WellFormedness
@@ -526,8 +526,8 @@ In file: [###].fear
 While inspecting type declaration "B"
 Type declaration "B" implements sealed type "X".
 Sealed types can only be implemented in their own package.
-Type declaration "B" is defined in package "b".
-Type "S" is defined in package "a".
+Type declaration "B" is in package "b".
+Type "X" is in package "a".
 
 Name "X" stands for "a.S" because of "use a.S as X".
 Source code inside folders named "_b" uses package name "a" to refer to the code inside folders named "_c", because of "map a as _c in _b", written in fear:/_b/_rank_app.fear.
@@ -547,7 +547,7 @@ This object literal is missing a required method.
 Missing: "imm .m".
 Required by: "a.S".
 Sealed types can only be implemented in their own package.
-Type "S" is defined in package "a".
+Type "a.S" is in package "a".
 
 Source code inside folders named "_b" uses package name "a" to refer to the code inside folders named "_c", because of "map a as _c in _b", written in fear:/_b/_rank_app.fear.
 

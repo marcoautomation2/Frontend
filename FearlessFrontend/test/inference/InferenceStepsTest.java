@@ -509,8 +509,8 @@ In file: [###].fear
 While inspecting type declaration "User"
 Type declaration "User" implements sealed type "base.Void".
 Sealed types can only be implemented in their own package.
-Type declaration "User" is defined in package "p".
-Type "Void" is defined in package "base".
+Type declaration "User" is in package "p".
+Type "base.Void" is in package "base".
 Error 7 WellFormedness
 """, List.of("""
 A:{}
@@ -526,8 +526,8 @@ In file: [###].fear
 While inspecting type declaration "User"
 Type declaration "User" implements sealed type "base.Void".
 Sealed types can only be implemented in their own package.
-Type declaration "User" is defined in package "p".
-Type "Void" is defined in package "base".
+Type declaration "User" is in package "p".
+Type "base.Void" is in package "base".
 Error 7 WellFormedness
 """, List.of("""
 A:{}
@@ -543,8 +543,8 @@ In file: [###].fear
 While inspecting type declaration "User"
 Type declaration "User" implements sealed type "Void".
 Sealed types can only be implemented in their own package.
-Type declaration "User" is defined in package "p".
-Type "Void" is defined in package "base".
+Type declaration "User" is in package "p".
+Type "Void" is in package "base".
 Error 7 WellFormedness
 """, List.of(importMini+"""
 A:{}
@@ -560,8 +560,8 @@ In file: [###].fear
 While inspecting object literal instance of "base.Void"
 Object literal instance of "base.Void" implements sealed type "base.Void".
 Sealed types can only be implemented in their own package.
-Object literal instance of "base.Void" is defined in package "p".
-Type "Void" is defined in package "base".
+Object literal instance of "base.Void" is in package "p".
+Type "base.Void" is in package "base".
 Error 7 WellFormedness
 """, List.of("""
 A:{}
