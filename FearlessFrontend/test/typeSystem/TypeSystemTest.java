@@ -1025,13 +1025,35 @@ User:{
 """));
 }
 
+@Test void drop_capFreeNamesTheLineOfTheObjectLiteralAndOfTheUse(){fail("""
+003| Foo:{#(a:A):G->
+004|   {
+005|     a
+   |     ^
+006|   }
+
+While inspecting parameter "a" > "#" line 5 > "#(_)" line 3
+Object literal instance of "iso G" (line 4) implements "base.CaptureFree".
+Thus parameter "a" (line 5) cannot be captured in that object literal.
+
+Compressed relevant code with inferred types: (compression indicated by `-`)
+a
+""", List.of("""
+A:{}
+G:base.CaptureFree{ #:A; }
+Foo:{#(a:A):G->
+  {
+    a
+  }
+  }
+"""));}
 @Test void drop_capFree(){fail("""
 003| Foo:{#(a:A):G->{a}}
    |      -----------^^
 
 While inspecting parameter "a" > "#" line 3 > "#(_)" line 3
-Object literal instance of "iso G" implements "base.CaptureFree".
-Thus parameter "a" (line 3) cannot be captured in this scope.
+Object literal instance of "iso G" (line 3) implements "base.CaptureFree".
+Thus parameter "a" (line 3) cannot be captured in that object literal.
 
 Compressed relevant code with inferred types: (compression indicated by `-`)
 a

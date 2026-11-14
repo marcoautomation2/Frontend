@@ -261,17 +261,18 @@ public record TypeSystemErrors(Function<TName,Literal> decs, Package pkg, Linked
   ///Raised when checking parameters.
   public FearlessException parameterNotAvailableHere(E.X x, Change.NoT why){
     return addExpFrame(x, err()
-      .line(whyDrop(err().expRepr(x), why))
+      .line(whyDrop(x, why))
       .ex(x)
       .addSpan(x.span().inner));
   }
-  private String whyDrop(String subject, Change.NoT why){
+  private String whyDrop(E.X x, Change.NoT why){
+    var subject= err().expRepr(x);
     return switch (why){
       case Change.DropMutInImm _ -> whyDropMutInImm(subject, why);
       case Change.DropReadHMutH _ -> whyDropReadHMutH(subject, why);
       case Change.DropNotKinded _ -> whyDropNotKinded(subject, why);
       case Change.DropFTV _ -> throw Bug.unreachable();
-      case Change.CapFree _ -> whyDropCapFree(subject, why);
+      case Change.CapFree _ -> whyDropCapFree(subject, x.span().inner.startLine(), why);
     };
   }
   private String whyDropMutInImm(String subject, Change.NoT why){
@@ -296,12 +297,10 @@ public record TypeSystemErrors(Function<TName,Literal> decs, Package pkg, Linked
     +explicitH+"and thus it cannot be captured in the "+err().expRepr(why.l())
     +" (line "+why.l().span().inner.startLine()+").\n";
   }
-  private String whyDropCapFree(String subject, Change.NoT why){
+  private String whyDropCapFree(String subject, int useLine, Change.NoT why){
     return
-    up(err().expRepr(why.l()))+" implements "+err().tNameADisp(LiteralDeclarations.captureFree)+".\n"
-    +"Thus "+subject
-    +" (line "+why.l().span().inner.startLine()+")"
-    +" cannot be captured in this scope.\n";
+    up(err().expRepr(why.l()))+" (line "+why.l().span().inner.startLine()+") implements "+err().tNameADisp(LiteralDeclarations.captureFree)+".\n"
+    +"Thus "+subject+" (line "+useLine+") cannot be captured in that object literal.\n";
   }
   ///Receiver expression of call c is typed into a type parameter (X / RC X / read/imm X), not a concrete RC C.
   ///Methods cannot be called on type parameters, so this call can never resolve.

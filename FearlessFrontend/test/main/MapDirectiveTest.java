@@ -1995,8 +1995,8 @@ In file: [###].fear
    |     -----------------^^
 
 While inspecting parameter "d" > "#" line 1 > "#(_)" line 1
-Object literal instance of "iso a.G" implements "bb.CaptureFree".
-Thus parameter "d" (line 1) cannot be captured in this scope.
+Object literal instance of "iso a.G" (line 1) implements "bb.CaptureFree".
+Thus parameter "d" (line 1) cannot be captured in that object literal.
 
 Source code inside folders named "_b" uses package name "a" to refer to the code inside folders named "_c", because of "map a as _c in _b", written in fear:/_b/_rank_app.fear.
 Source code inside folders named "_b" uses package name "bb" to refer to the code inside folders named "_base", because of "map bb as _base in _b", written in fear:/_b/_rank_app.fear.
