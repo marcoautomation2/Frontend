@@ -362,7 +362,7 @@ public record Methods(
     var first= res.getFirst();
     var same= res.stream().allMatch(t -> TypeRename.eqModXRC(bs, first, t));
     if (same){ return res.getFirst(); }
-    throw p.err().noAgreement(at, bs, res, msg);
+    throw p.err().noAgreement(at, bs, res, msg, ss.getFirst(), declared(ss.getFirst()));
   }
   //ssAligned is always grouped/bucketed by rc upstream (see pairWithSig callers), so rc is always uniform here.
   private RC rcAgreement(List<M.Sig> ssAligned){

@@ -1071,6 +1071,20 @@ Sup1:{ .id[X:imm](x:X):X }
 Sup2:{ .id[X:read](x:X):X }
 A:{ .m[X](x:X): Sup1 -> Both:Sup1,Sup2{} }
 """));}
+@Test void supertypesDisagreeOnTheReturnTypeInsideAGenericMethod(){failWf("""
+003| A:{ .m[X](x:X): Sup1 -> Both:Sup1,Sup2{} }
+   |                         ^^^^^^^^^^^^^^^^
+
+While inspecting object literal "Both"
+Supertypes disagree on the return type of method "imm .get" with 0 parameters.
+Candidates: "_AX", "Sup1".
+Generic type parameter "X" of "Sup1.get" is named "_AX" here.
+The candidates are different types and "_AX" is a generic type parameter, so no method ".get" can implement all the candidates.
+""", List.of("""
+Sup1:{ .get[X]:X }
+Sup2:{ .get[X]:Sup1 }
+A:{ .m[X](x:X): Sup1 -> Both:Sup1,Sup2{} }
+"""));}
 @Test void supertypesDisagreeOnGenericArityInsideAGenericMethod(){failWf("""
 003| A:{ .m[X](x:X): Sup1 -> Both:Sup1,Sup2{} }
    |                         ^^^^^^^^^^^^^^^^

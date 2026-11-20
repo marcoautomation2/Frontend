@@ -87,7 +87,7 @@ public record TypeSystemErrors(Function<TName,Literal> decs, Package pkg, Linked
     var parent= parent(l, m.sig());
     var written= fm.flatMap(fearlessFullGrammar.M::sig).flatMap(fearlessFullGrammar.Sig::bs).isPresent();
     if (fm.isEmpty() || written || parent.isEmpty()){ return Optional.empty(); }
-    return renamed(parentSig(parent.get(), m.sig()), declared(parent.get(), m.sig()).get().bs(), m.sig().bs());
+    return renamed(parentSig(parent.get(), m.sig()), declared(parent.get(), m.sig()).get().bs(), m.sig().bs(), _ -> true);
   }
   private Optional<Sig> declared(T.C c, Sig s){
     return decs.apply(c.name()).ms().stream().map(M::sig).filter(ps -> ps.origin().equals(c.name()) && ps.m().equals(s.m()) && ps.rc() == s.rc()).findFirst();

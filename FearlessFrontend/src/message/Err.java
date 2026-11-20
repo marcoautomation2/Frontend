@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -101,8 +102,8 @@ public record Err(Function<T.C,T.C> publicHead, Function<TName,TName> preferredF
   String typeRepr(T.C t){ return disp(cp().msgT(new T.RCC(RC.imm, preferredForFresh(t), t.span()))); }
   static String count(int n, String noun){ return n+" "+noun+(n == 1 ? "" : "s"); }
   static String up(String s){ return s.substring(0, 1).toUpperCase(Locale.ROOT)+s.substring(1); }
-  static Optional<String> renamed(String parentSig, List<B> declared, List<B> here){
-    var renamed= Streams.zip(declared, here).filter((d,h) -> !d.x().equals(h.x()));
+  static Optional<String> renamed(String parentSig, List<B> declared, List<B> here, Predicate<String> shown){
+    var renamed= Streams.zip(declared, here).filter((d,h) -> !d.x().equals(h.x()) && shown.test(h.x()));
     var from= renamed.map((d,_) -> disp(d.x())).toList();
     if (from.isEmpty()){ return Optional.empty(); }
     var many= from.size() > 1;

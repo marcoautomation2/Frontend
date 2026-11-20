@@ -446,13 +446,14 @@ public record WellFormednessErrors(String pkgName, Map<String,String> map, Map<S
   }
   public String retTypeDisagreement(){ return "the return type"; }
   public String paramTypeDisagreement(int i){ return "the type of parameter "+(i+1); }
-  public FearlessException noAgreement(Agreement at, List<B> bs, List<IT> res, String msg){
+  public FearlessException noAgreement(Agreement at, List<B> bs, List<IT> res, String msg, M.Sig first, core.Sig declared){
     var rc= at.rc().map(r -> r.toStrSpace(false)).orElse("");
     var rcDiffers= res.stream().map(t -> t instanceof IT.RCC r ? EnumSet.of(r.rc().orElse(RC.imm)) : Kinding.intrinsicRCs(bs, TypeRename.itToT(t))).distinct().count() > 1;
     var x= res.stream().filter(t -> !(t instanceof IT.RCC)).findFirst();
     var e= err()
       .line("Supertypes disagree on "+msg+" of method "+methodSig(rc, at.mName())+" with "+count(at.mName().arity(), "parameter")+".")
       .list("Candidates", res.stream().map(o -> option(rcDiffers, o)).toList());
+    renamed(err().methodSig("", declared.origin(), declared.m()), declared.bs(), first.bs().get(), n -> res.stream().anyMatch(t -> t.ftv().anyMatch(n::equals))).ifPresent(e::line);
     var m= err().methodSig(at.mName());
     if (rcDiffers){ return wf(e.line("The candidates differ in reference capability, and an overriding method must keep the reference capability, so no method "+m+" can implement all the candidates."), at); }
     if (x.isPresent()){ return wf(e.line("The candidates are different types and "+option(false, x.get())+" is a generic type parameter, so no method "+m+" can implement all the candidates."), at); }
@@ -467,7 +468,7 @@ public record WellFormednessErrors(String pkgName, Map<String,String> map, Map<S
       .line("Supertypes disagree on the number of generic type parameters of method "+err().methodSig(at.mName())
         +" with "+count(at.mName().arity(), "parameter")+".")
       .list("Candidates", ss.stream().map(s -> disp(s.bs().get())).distinct().toList());
-    Streams.zip(declared, ss).filterMap((d,s) -> renamed(err().methodSig("", d.origin(), d.m()), d.bs(), s.bs().get())).distinct().forEach(e::line);
+    Streams.zip(declared, ss).filterMap((d,s) -> renamed(err().methodSig("", d.origin(), d.m()), d.bs(), s.bs().get(), _ -> true)).distinct().forEach(e::line);
     return wf(e.line(up(err().expRepr(at.lit()))+" cannot implement all of those supertypes."), at);
   }
   public FearlessException methodGenericArityDisagreesWithSupers(Agreement at, List<B> userBs, List<M.Sig> ss){
