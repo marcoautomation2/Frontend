@@ -1077,7 +1077,9 @@ A:{ .m[X](x:X): Sup1 -> Both:Sup1,Sup2{} }
 
 While inspecting object literal "Both"
 Supertypes disagree on the return type of method "imm .get" with 0 parameters.
-Candidates: "_AX", "Sup1".
+Candidates:
+- "_AX"
+- "Sup1"
 Generic type parameter "X" of "Sup1.get" is named "_AX" here.
 The candidates are different types and "_AX" is a generic type parameter, so no method ".get" can implement all the candidates.
 """, List.of("""
