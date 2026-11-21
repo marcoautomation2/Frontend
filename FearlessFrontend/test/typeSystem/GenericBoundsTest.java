@@ -305,6 +305,19 @@ Sup:{ .m[X:*]: K[X]; }
 K[Y:*]:{ .k: Y; }
 B[X:*]:Sup{ .m -> { .k -> {} } }
 """));}
+@Test void literalCannotImplementATypeVariableRenamedFromARedeclaration(){failWf("""
+003| B[Y:*]:Mid{ .m -> {} }
+   |                   ^^
+
+While inspecting object literal "{...}"
+Object literal "{...}" cannot implement "_AY".
+"_AY" is a generic type parameter; object literals can only implement nominal types.
+Generic type parameter "Y" of "Mid.m" is named "_AY" here.
+""", List.of("""
+Top:{ .m[X:*]: X; }
+Mid:Top{ .m[Y:*]: Y; }
+B[Y:*]:Mid{ .m -> {} }
+"""));}
 @Test void literalMethodNotInferredAsReceiver(){failWf("""
 001| A[X:*]:{ #: X -> {this}* }
    |                  -^^^^-

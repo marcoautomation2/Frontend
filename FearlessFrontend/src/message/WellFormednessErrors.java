@@ -563,7 +563,7 @@ public record WellFormednessErrors(String pkgName, Map<String,String> map, Map<S
   private Stream<String> renamedIn(ToCore.Enclosing en, Function<TName,core.E.Literal> decs){
     var s= en.sig();
     return en.parents().stream().flatMap(p -> decs.apply(p).ms().stream().map(core.M::sig).filter(ps -> ps.origin().equals(p) && ps.m().equals(s.m()) && ps.rc() == s.rc()))
-      .flatMap(ps -> renamed(err().methodSig("", ps.origin(), ps.m()), ps.bs(), s.bs()).stream());
+      .findFirst().flatMap(ps -> renamed(err().methodSig("", ps.origin(), ps.m()), ps.bs(), s.bs())).stream();
   }
   public FearlessException typeGrowsForever(E at){
     return wf(err()
