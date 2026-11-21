@@ -41,6 +41,7 @@ import tools.Fs;
 import tools.SourceOracle.Ref;
 import typeSystem.Kinding;
 import utils.Join;
+import utils.OneOr;
 import utils.Pos;
 import java.util.EnumSet;
 import utils.Push;
@@ -553,7 +554,7 @@ public record WellFormednessErrors(String pkgName, Map<String,String> map, Map<S
   public FearlessException literalImplementsTypeParameter(E.Literal at, IT t){
     return wf(err()
       .line(up(err().expRepr(at))+" cannot implement "+err().typeRepr(t)+".")
-      .line(err().typeRepr(t)+" is a generic type parameter; object literals can only implement nominal types."), at);
+      .line(disp(OneOr.of("Type parameters", t.ftv()))+" is a generic type parameter; object literals can only implement nominal types."), at);
   }
   public FearlessException typeGrowsForever(E at){
     return wf(err()

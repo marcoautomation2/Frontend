@@ -260,6 +260,26 @@ Object literal "{...}" cannot implement "X".
 """, List.of("""
 A[X:*]:{ #: X -> {this} }
 """));}
+@Test void literalCannotImplementAMutTypeVariable(){failWf("""
+001| A[X:*]:{ #: mut X -> {} }
+   |                      ^^
+
+While inspecting object literal "{...}"
+Object literal "{...}" cannot implement "mut X".
+"X" is a generic type parameter; object literals can only implement nominal types.
+""", List.of("""
+A[X:*]:{ #: mut X -> {} }
+"""));}
+@Test void literalCannotImplementAReadImmTypeVariable(){failWf("""
+001| A[X:*]:{ read #: read/imm X -> {} }
+   |                                ^^
+
+While inspecting object literal "{...}"
+Object literal "{...}" cannot implement "read/imm X".
+"X" is a generic type parameter; object literals can only implement nominal types.
+""", List.of("""
+A[X:*]:{ read #: read/imm X -> {} }
+"""));}
 @Test void literalMethodNotInferredAsReceiver(){failWf("""
 001| A[X:*]:{ #: X -> {this}* }
    |                  -^^^^-
