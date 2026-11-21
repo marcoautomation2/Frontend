@@ -21,7 +21,8 @@ import utils.Pos;
 import utils.Push;
 import utils.Streams;
 
-public record ToCore(List<B> ctx, Methods meths){
+public record ToCore(List<B> ctx, List<ToCore.Enclosing> enclosing, Methods meths){
+  public record Enclosing(List<TName> parents, core.Sig sig){}
   core.E of(inference.E exp, inference.E orig){ return switch (exp){
     case inference.E.X(var name, _, var src, _) -> new core.E.X(name, src);
     case inference.E.Type(var type, _, var src, _) -> type(type, src);
@@ -44,8 +45,8 @@ public record ToCore(List<B> ctx, Methods meths){
     var bs= !e.infName() ? e.bs() : Streams.of(B.xs(e.bs()).stream(), free.ftvCs(e.cs()), free.ftvMs(e.ms()), free.ftvMs(o.ms())).distinct().map(x -> B.get(ctx, x)).toList();
     assert !e.infName() || B.xs(ctx).containsAll(B.xs(bs));
     var name= e.name().withArity(bs.size());
-    var inner= new ToCore(e.infName() ? Push.of(ctx, bs).stream().distinct().toList() : bs, meths);
-    if (!(e.t() instanceof IT.RCC) && !e.t().undecided()){ throw meths.p().err().literalImplementsTypeParameter(e, e.t()); }
+    var inner= new ToCore(e.infName() ? Push.of(ctx, bs).stream().distinct().toList() : bs, enclosing, meths);
+    if (!(e.t() instanceof IT.RCC) && !e.t().undecided()){ throw meths.p().err().literalImplementsTypeParameter(e, e.t(), enclosing, meths::from); }
     var csIT= distinctTypes(inner.ctx(), Push.of(o.cs(), e.cs()));
     for (var c : csIT){ checkHead(e, c); }
     assert !e.infName() || !e.thisName().equals("_") || e.t().undecided() || e.ms().stream().anyMatch(m -> m.impl().isPresent());
@@ -145,7 +146,7 @@ public record ToCore(List<B> ctx, Methods meths){
     }
     var ei= e.impl().get();
     var oi= o.impl().get();
-    var inner= new ToCore(Push.of(ctx, s.bs()).stream().distinct().toList(), meths);
+    var inner= new ToCore(Push.of(ctx, s.bs()).stream().distinct().toList(), Push.of(enclosing, new Enclosing(at.cs().stream().map(IT.C::name).toList(), s)), meths);
     return new core.M(s, e.xs(), e.names(), Optional.of(inner.of(ei.e(), oi.e())));
   }
   core.Sig sig(inference.M.Sig inf, inference.M.Sig usr, inference.E.Literal at){

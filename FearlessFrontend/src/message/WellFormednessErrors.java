@@ -32,6 +32,7 @@ import inference.E;
 import inference.IT;
 import inference.M;
 import inject.Methods.Agreement;
+import inject.ToCore;
 import inject.TypeRename;
 import metaParser.NameSuggester;
 import metaParser.PrettyFileName;
@@ -551,10 +552,18 @@ public record WellFormednessErrors(String pkgName, Map<String,String> map, Map<S
   public FearlessException methodTypeNotInferred(E.Literal at, M.Sig s, MName m, String what){
     return wf(err().line("Cannot infer the type of "+what+" of "+err().methodSig(m)+" in "+err().expRepr(at)+"."), s, at);
   }
-  public FearlessException literalImplementsTypeParameter(E.Literal at, IT t){
-    return wf(err()
+  public FearlessException literalImplementsTypeParameter(E.Literal at, IT t, List<ToCore.Enclosing> enclosing, Function<TName,core.E.Literal> decs){
+    var x= OneOr.of("Type parameters", t.ftv());
+    var e= err()
       .line(up(err().expRepr(at))+" cannot implement "+err().typeRepr(t)+".")
-      .line(disp(OneOr.of("Type parameters", t.ftv()))+" is a generic type parameter; object literals can only implement nominal types."), at);
+      .line(disp(x)+" is a generic type parameter; object literals can only implement nominal types.");
+    enclosing.stream().filter(en -> B.xs(en.sig().bs()).contains(x)).flatMap(en -> renamedIn(en, decs)).forEach(e::line);
+    return wf(e, at);
+  }
+  private Stream<String> renamedIn(ToCore.Enclosing en, Function<TName,core.E.Literal> decs){
+    var s= en.sig();
+    return en.parents().stream().flatMap(p -> decs.apply(p).ms().stream().map(core.M::sig).filter(ps -> ps.origin().equals(p) && ps.m().equals(s.m()) && ps.rc() == s.rc()))
+      .flatMap(ps -> renamed(err().methodSig("", ps.origin(), ps.m()), ps.bs(), s.bs()).stream());
   }
   public FearlessException typeGrowsForever(E at){
     return wf(err()

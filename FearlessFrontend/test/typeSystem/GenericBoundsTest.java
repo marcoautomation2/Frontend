@@ -280,6 +280,31 @@ Object literal "{...}" cannot implement "read/imm X".
 """, List.of("""
 A[X:*]:{ read #: read/imm X -> {} }
 """));}
+@Test void literalCannotImplementARenamedTypeVariable(){failWf("""
+002| B[X:*]:Sup{ .m -> {} }
+   |                   ^^
+
+While inspecting object literal "{...}"
+Object literal "{...}" cannot implement "_AX".
+"_AX" is a generic type parameter; object literals can only implement nominal types.
+Generic type parameter "X" of "Sup.m" is named "_AX" here.
+""", List.of("""
+Sup:{ .m[X:*]: X; }
+B[X:*]:Sup{ .m -> {} }
+"""));}
+@Test void nestedLiteralCannotImplementARenamedTypeVariable(){failWf("""
+003| B[X:*]:Sup{ .m -> { .k -> {} } }
+   |                           ^^
+
+While inspecting object literal "{...}"
+Object literal "{...}" cannot implement "_AX".
+"_AX" is a generic type parameter; object literals can only implement nominal types.
+Generic type parameter "X" of "Sup.m" is named "_AX" here.
+""", List.of("""
+Sup:{ .m[X:*]: K[X]; }
+K[Y:*]:{ .k: Y; }
+B[X:*]:Sup{ .m -> { .k -> {} } }
+"""));}
 @Test void literalMethodNotInferredAsReceiver(){failWf("""
 001| A[X:*]:{ #: X -> {this}* }
    |                  -^^^^-
