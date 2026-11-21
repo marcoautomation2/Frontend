@@ -99,7 +99,7 @@ public record InjectionSteps(Methods meths, int cap){
     ei = s.nextStar(bs, g, ei);
     g.latePass();
     ei = s.nextStar(bs, g, ei);
-    return new core.M(mCore.sig(), xs, m.names(), Optional.of(new ToCore(bs, List.of(new ToCore.Enclosing(di.cs().stream().map(core.T.C::name).toList(), mCore.sig())), meths).of(ei, e)));
+    return new core.M(mCore.sig(), xs, m.names(), Optional.of(new ToCore(bs, List.of(new ToCore.Enclosing(di.src(), di.cs().stream().map(core.T.C::name).toList(), mCore.sig())), meths).of(ei, e)));
   }
   E meet(E e, IT t){
     if (e instanceof E.Type tt){ return meetT(tt, t); }

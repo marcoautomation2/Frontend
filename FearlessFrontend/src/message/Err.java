@@ -101,6 +101,22 @@ public record Err(Function<T.C,T.C> publicHead, Function<TName,TName> preferredF
   String typeRepr(T.C t){ return disp(cp().msgT(new T.RCC(RC.imm, preferredForFresh(t), t.span()))); }
   static String count(int n, String noun){ return n+" "+noun+(n == 1 ? "" : "s"); }
   static String up(String s){ return s.substring(0, 1).toUpperCase(Locale.ROOT)+s.substring(1); }
+  static Optional<fearlessFullGrammar.M> srcM(Src src, Sig s){
+    List<fearlessFullGrammar.M> ms= switch (src.inner){
+      case fearlessFullGrammar.Declaration d -> d.l().methods();
+      case fearlessFullGrammar.E.Literal gl -> gl.methods();
+      case fearlessFullGrammar.E.TypedLiteral t -> t.l().map(fearlessFullGrammar.E.Literal::methods).orElse(List.of());
+      default -> throw Bug.unreachable();
+    };
+    return utils.OneOr.opt("Malformed methods", ms.stream().filter(mi -> mi.span().inner.equals(s.span().inner)));
+  }
+  Optional<String> renamedGenerics(Function<TName,Literal> decs, Src src, List<TName> parents, Sig s){
+    var fm= srcM(src, s);
+    var written= fm.flatMap(fearlessFullGrammar.M::sig).flatMap(fearlessFullGrammar.Sig::bs).isPresent();
+    if (fm.isEmpty() || written){ return Optional.empty(); }
+    return parents.stream().flatMap(p -> decs.apply(p).ms().stream().map(M::sig).filter(ps -> ps.origin().equals(p) && ps.m().equals(s.m()) && ps.rc() == s.rc()))
+      .findFirst().flatMap(ps -> renamed(methodSig("", ps.origin(), ps.m()), ps.bs(), s.bs()));
+  }
   static Optional<String> renamed(String parentSig, List<B> declared, List<B> here){
     var renamed= Streams.zip(declared, here).filter((d,h) -> !d.x().equals(h.x()));
     var from= renamed.map((d,_) -> disp(d.x())).toList();

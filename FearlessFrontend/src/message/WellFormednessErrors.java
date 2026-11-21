@@ -557,13 +557,8 @@ public record WellFormednessErrors(String pkgName, Map<String,String> map, Map<S
     var e= err()
       .line(up(err().expRepr(at))+" cannot implement "+err().typeRepr(t)+".")
       .line(disp(x)+" is a generic type parameter; object literals can only implement nominal types.");
-    enclosing.stream().filter(en -> B.xs(en.sig().bs()).contains(x)).flatMap(en -> renamedIn(en, decs)).forEach(e::line);
+    enclosing.stream().filter(en -> B.xs(en.sig().bs()).contains(x)).flatMap(en -> e.renamedGenerics(decs, en.src(), en.parents(), en.sig()).stream()).forEach(e::line);
     return wf(e, at);
-  }
-  private Stream<String> renamedIn(ToCore.Enclosing en, Function<TName,core.E.Literal> decs){
-    var s= en.sig();
-    return en.parents().stream().flatMap(p -> decs.apply(p).ms().stream().map(core.M::sig).filter(ps -> ps.origin().equals(p) && ps.m().equals(s.m()) && ps.rc() == s.rc()))
-      .findFirst().flatMap(ps -> renamed(err().methodSig("", ps.origin(), ps.m()), ps.bs(), s.bs())).stream();
   }
   public FearlessException typeGrowsForever(E at){
     return wf(err()

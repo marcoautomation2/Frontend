@@ -22,7 +22,7 @@ import utils.Push;
 import utils.Streams;
 
 public record ToCore(List<B> ctx, List<ToCore.Enclosing> enclosing, Methods meths){
-  public record Enclosing(List<TName> parents, core.Sig sig){}
+  public record Enclosing(Src src, List<TName> parents, core.Sig sig){}
   core.E of(inference.E exp, inference.E orig){ return switch (exp){
     case inference.E.X(var name, _, var src, _) -> new core.E.X(name, src);
     case inference.E.Type(var type, _, var src, _) -> type(type, src);
@@ -146,7 +146,7 @@ public record ToCore(List<B> ctx, List<ToCore.Enclosing> enclosing, Methods meth
     }
     var ei= e.impl().get();
     var oi= o.impl().get();
-    var inner= new ToCore(Push.of(ctx, s.bs()).stream().distinct().toList(), Push.of(enclosing, new Enclosing(at.cs().stream().map(IT.C::name).toList(), s)), meths);
+    var inner= new ToCore(Push.of(ctx, s.bs()).stream().distinct().toList(), Push.of(enclosing, new Enclosing(at.src(), at.cs().stream().map(IT.C::name).toList(), s)), meths);
     return new core.M(s, e.xs(), e.names(), Optional.of(inner.of(ei.e(), oi.e())));
   }
   core.Sig sig(inference.M.Sig inf, inference.M.Sig usr, inference.E.Literal at){

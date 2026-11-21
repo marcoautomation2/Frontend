@@ -318,6 +318,17 @@ Top:{ .m[X:*]: X; }
 Mid:Top{ .m[Y:*]: Y; }
 B[Y:*]:Mid{ .m -> {} }
 """));}
+@Test void literalCannotImplementAWrittenTypeVariable(){failWf("""
+002| B[X:*]:Sup{ .m[Z:*] -> {} }
+   |                        ^^
+
+While inspecting object literal "{...}"
+Object literal "{...}" cannot implement "Z".
+"Z" is a generic type parameter; object literals can only implement nominal types.
+""", List.of("""
+Sup:{ .m[X:*]: X; }
+B[X:*]:Sup{ .m[Z:*] -> {} }
+"""));}
 @Test void literalMethodNotInferredAsReceiver(){failWf("""
 001| A[X:*]:{ #: X -> {this}* }
    |                  -^^^^-
