@@ -114,9 +114,11 @@ public record Err(Function<T.C,T.C> publicHead, Function<TName,TName> preferredF
     var fm= srcM(src, s);
     var written= fm.flatMap(fearlessFullGrammar.M::sig).flatMap(fearlessFullGrammar.Sig::bs).isPresent();
     if (fm.isEmpty() || written){ return Optional.empty(); }
-    return parents.stream().flatMap(p -> decs.apply(p).ms().stream().map(M::sig).filter(ps -> ps.origin().equals(p) && ps.m().equals(s.m()) && ps.rc() == s.rc()))
-      .findFirst().flatMap(ps -> renamed(methodSig("", ps.origin(), ps.m()), ps.bs(), s.bs()));
+    var declared= parents.stream().flatMap(p -> decs.apply(p).ms().stream().map(M::sig).filter(ps -> ps.origin().equals(p) && ps.m().equals(s.m()) && ps.rc() == s.rc())).toList();
+    return declared.stream().filter(ps -> declared.stream().noneMatch(qs -> isSuper(decs, ps.origin(), qs.origin()))).findFirst()
+      .flatMap(ps -> renamed(methodSig("", ps.origin(), ps.m()), ps.bs(), s.bs()));
   }
+  private static boolean isSuper(Function<TName,Literal> decs, TName sup, TName sub){ return decs.apply(sub).cs().stream().anyMatch(c -> c.name().equals(sup)); }
   static Optional<String> renamed(String parentSig, List<B> declared, List<B> here){
     var renamed= Streams.zip(declared, here).filter((d,h) -> !d.x().equals(h.x()));
     var from= renamed.map((d,_) -> disp(d.x())).toList();

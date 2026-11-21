@@ -318,6 +318,20 @@ Top:{ .m[X:*]: X; }
 Mid:Top{ .m[Y:*]: Y; }
 B[Y:*]:Mid{ .m -> {} }
 """));}
+@Test void literalCannotImplementATypeVariableRenamedFromAnImpliedRedeclaration(){failWf("""
+004| B[Y:*]:Top,Mid{ .m -> {} }
+   |                       ^^
+
+While inspecting object literal "{...}"
+Object literal "{...}" cannot implement "_AY".
+"_AY" is a generic type parameter; object literals can only implement nominal types.
+Generic type parameter "Y" of "Mid.m" is named "_AY" here.
+""", List.of("""
+Top:{ .m[X:*]: X; }
+Between:Top{}
+Mid:Between{ .m[Y:*]: Y; }
+B[Y:*]:Top,Mid{ .m -> {} }
+"""));}
 @Test void literalCannotImplementAWrittenTypeVariable(){failWf("""
 002| B[X:*]:Sup{ .m[Z:*] -> {} }
    |                        ^^
